@@ -43,25 +43,29 @@ jobs:
           
           case "${{ inputs.bump }}" in
             major)
-              NEW_VERSION="$((MAJOR + 1)).0.0"
+              RELEASE_VERSION="$((MAJOR + 1)).0.0"
+              DEV_VERSION="$((MAJOR + 1)).1.0-dev"
               ;;
             minor)
-              NEW_VERSION="$MAJOR.$((MINOR + 1)).0"
+              RELEASE_VERSION="$MAJOR.$((MINOR + 1)).0"
+              DEV_VERSION="$MAJOR.$((MINOR + 1)).1-dev"
               ;;
             patch)
-              NEW_VERSION="$MAJOR.$MINOR.$((PATCH + 1))"
+              RELEASE_VERSION="$MAJOR.$MINOR.$((PATCH + 1))"
+              DEV_VERSION="$MAJOR.$MINOR.$((PATCH + 2))-dev"
               ;;
           esac
           
-          echo "new=$NEW_VERSION" >> $GITHUB_OUTPUT
-          echo "tag=v$NEW_VERSION" >> $GITHUB_OUTPUT
+          echo "release=$RELEASE_VERSION" >> $GITHUB_OUTPUT
+          echo "dev=$DEV_VERSION" >> $GITHUB_OUTPUT
+          echo "tag=v$RELEASE_VERSION" >> $GITHUB_OUTPUT
 
-      - name: Update package.json version
+      - name: Update package.json to release version
         run: |
           node -e "
             const fs = require('fs');
             const pkg = require('./package.json');
-            pkg.version = '${{ steps.version.outputs.new }}';
+            pkg.version = '${{ steps.version.outputs.release }}';
             fs.writeFileSync('./package.json', JSON.stringify(pkg, null, 2) + '\n');
           "
 
@@ -75,3 +79,18 @@ jobs:
         run: |
           git push
           git push origin "${{ steps.version.outputs.tag }}"
+
+      - name: Bump to next dev version
+        run: |
+          node -e "
+            const fs = require('fs');
+            const pkg = require('./package.json');
+            pkg.version = '${{ steps.version.outputs.dev }}';
+            fs.writeFileSync('./package.json', JSON.stringify(pkg, null, 2) + '\n');
+          "
+
+      - name: Commit dev version
+        run: |
+          git add package.json
+          git commit -m "chore: bump version to ${{ steps.version.outputs.dev }} for next development cycle"
+          git push

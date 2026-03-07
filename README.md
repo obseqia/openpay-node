@@ -63,6 +63,44 @@ await openpay.<resource>.<method>();
 
 This SDK is built for Node.js v24.0.0 and above.
 
+## 🌎 Country Compatibility
+
+All three countries share the same SDK interface but not every resource or field is available in every country.
+
+### Resources
+
+| Resource | México | Colombia | Perú |
+| --- | :---: | :---: | :---: |
+| `charges` | ✅ | ✅ | ✅ |
+| `charges.capture` | ✅ | ❌ | ❌ |
+| `charges.refund` | ✅ | ✅ | ✅ |
+| `cards` | ✅ | ✅ | ✅ |
+| `customers` | ✅ | ✅ | ✅ |
+| `customers.charges` | ✅ | ✅ | ✅ |
+| `customers.cards` | ✅ | ✅ | ✅ |
+| `customers.subscriptions` | ✅ | ✅ | ✅ |
+| `customers.bankaccounts` | ✅ | ❌ | ❌ |
+| `customers.transfers` | ✅ | ❌ | ❌ |
+| `customers.payouts` | ✅ | ❌ | ❌ |
+| `customers.pse` | ❌ | ✅ | ❌ |
+| `customers.checkouts` | ❌ | ❌ | ✅ |
+| `fees` | ✅ | ❌ | ❌ |
+| `payouts` | ✅ | ❌ | ❌ |
+| `plans` | ✅ | ✅ | ✅ |
+| `tokens` | ✅ | ✅ | ✅ |
+| `stores` | ✅ | ✅ | ❌ |
+| `webhooks` | ✅ | ✅ | ✅ |
+| `pse` | ❌ | ✅ | ❌ |
+| `checkouts` | ❌ | ❌ | ✅ |
+
+### Country-specific fields
+
+| Field | Resource | Country | Notes |
+| --- | --- | :---: | --- |
+| `iva` | `Charge.CreateInput` | Colombia | Tax field required for some charge types |
+| `customer_address` | `Customer`, `Customer.CreateInput` | Colombia | Colombian address structure (`department`, `city`, `additional`) |
+| `clientIP` | `Openpay` constructor | All | Required. IPv4 only. Used for anti-fraud system |
+
 ## ⚙️ Configuration
 
 To instantiate the Openpay SDK, you need to pass the following configurations:

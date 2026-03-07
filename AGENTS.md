@@ -94,7 +94,7 @@ pnpm exec prettier --write .
 pnpm exec eslint ./src ./tests
 ```
 
-- There is no dedicated `typecheck` script.
+- Vitest runs `typecheck.enabled: true` during test execution and will fail if there are type errors.
 - `eslint ./src ./tests` is useful when touching tests because the default lint script only covers `src`.
 
 ## Test Environment

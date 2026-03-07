@@ -1,8 +1,23 @@
 {
-  "name": "openpay",
-  "description": "Openpay library",
-  "version": "3.0.0",
-  "repository": "https://github.com/open-pay/openpay-node",
+  "name": "@obseqia/openpay-node",
+  "description": "Modern Openpay SDK for Node.js — supports México, Colombia and Perú",
+  "version": "3.1.0",
+  "license": "MIT",
+  "author": "Obseqia <dev@obseqia.com>",
+  "homepage": "https://github.com/obseqia/openpay-node#readme",
+  "bugs": {
+    "url": "https://github.com/obseqia/openpay-node/issues"
+  },
+  "keywords": [
+    "openpay",
+    "payments",
+    "mexico",
+    "colombia",
+    "peru",
+    "sdk",
+    "node"
+  ],
+  "repository": "https://github.com/obseqia/openpay-node",
   "type": "module",
   "sideEffects": false,
   "main": "./dist/openpay.cjs",
@@ -15,27 +30,45 @@
       "import": "./dist/openpay.js"
     }
   },
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "rimraf dist && tsup src/openpay.ts --format cjs,esm --dts --no-splitting",
-    "lint": "biome lint ./src",
+    "lint": "eslint ./src",
+    "format": "prettier --write .",
     "test:mx": "vitest run mexico",
     "test:co": "vitest run colombia",
     "test:pe": "vitest run peru"
   },
   "devDependencies": {
-    "@biomejs/biome": "^1.9.4",
-    "@types/node": "^22.9.1",
-    "dotenv": "^16.4.5",
-    "rimraf": "^6.0.1",
-    "tsup": "^8.3.5",
-    "typescript": "^5.7.2",
-    "vitest": "^2.1.5"
+    "@eslint/js": "^10.0.1",
+    "@types/node": "^24",
+    "dotenv": "^17",
+    "eslint": "^10.0.3",
+    "eslint-config-prettier": "^10.1.8",
+    "jiti": "^2.6.1",
+    "prettier": "^3.8.1",
+    "prettier-plugin-organize-imports": "^4.3.0",
+    "rimraf": "^6.1.3",
+    "tsup": "^8.5.1",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.56.1",
+    "vitest": "^4.0.18"
   },
   "dependencies": {
-    "ofetch": "^1.4.1"
+    "ofetch": "^1.5.1"
   },
   "engines": {
-    "node": ">=14.0.0"
+    "node": ">=24.0.0"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild"
+    ]
   }
 }

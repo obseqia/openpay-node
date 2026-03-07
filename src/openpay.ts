@@ -8,7 +8,7 @@ const OPEN_PAY_MX_SANDBOX_URL = 'https://sandbox-api.openpay.mx';
 const OPEN_PAY_API_VERSION = 'v1';
 const OPEN_PAY_SANDBOX_API_VERSION = 'v1';
 
-export { IOpenpay } from './types';
+export type { IOpenpay } from './types';
 
 export class Openpay {
   private merchantId = '';

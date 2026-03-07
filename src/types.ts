@@ -30,6 +30,8 @@ export namespace IOpenpay {
     country_code: string;
   }
 
+  export type Metadata = Record<string, string | number | boolean>;
+
   export interface BasicListQuery {
     creation?: string;
     'creation[gte]'?: string;
@@ -210,15 +212,16 @@ export namespace IOpenpay {
 
     export interface CreateFromCard extends CreateBase {
       method: 'card';
-      source_id: string;
+      source_id?: string;
       device_session_id?: string;
       capture?: boolean;
       payment_plan?: { payments: PaymentMonths };
-      metadata?: Record<string, any>;
+      metadata?: Metadata;
       use_card_points?: 'NONE' | 'MIXED' | 'ONLY_POINTS';
       confirm?: boolean;
       send_email?: boolean;
       use_3d_secure?: boolean;
+      due_date?: string;
     }
 
     export interface CreateFromStore extends CreateBase {
@@ -240,7 +243,7 @@ export namespace IOpenpay {
       method: 'card';
       confirm: 'ivr';
       currency?: Currency;
-      metadata?: Record<string, any>;
+      metadata?: Metadata;
       send_email?: boolean;
     }
 
@@ -393,7 +396,6 @@ export namespace IOpenpay {
     status_after_retry: 'unpaid' | 'cancelled';
     trial_days: number;
     iva?: string | null;
-    default_charge_quantity?: any | null;
   }
 
   export namespace Plan {
@@ -440,7 +442,6 @@ export namespace IOpenpay {
     status: 'active' | 'trial' | 'past_due' | 'unpaid' | 'cancelled';
     customer_id: string;
     card: Card;
-    default_charge_quantity?: any | null;
   }
 
   export namespace Subscription {
@@ -507,7 +508,7 @@ export namespace IOpenpay {
   export namespace Checkout {
     export type Status = 'available' | 'other';
 
-    export interface CreateInput {
+    export type CreateInput = {
       amount: number;
       description: string;
       order_id: string;
@@ -517,6 +518,7 @@ export namespace IOpenpay {
       send_email?: boolean;
       customer: Checkout['customer'];
     }
+    export type UpdateInput = Pick<CreateInput, 'description' | 'redirect_url' | 'expiration_date' | 'send_email'>;
   }
 
   export namespace SDK {
@@ -642,7 +644,7 @@ export namespace IOpenpay {
       create(data: Checkout.CreateInput): Promise<Checkout>;
       list(query?: BasicListQuery): Promise<Checkout[]>;
       get(checkoutId: string): Promise<Checkout>;
-      update(checkoutId: string, status: Checkout.Status, data: any): Promise<Checkout>;
+      update(checkoutId: string, status: Checkout.Status, data: Checkout.UpdateInput): Promise<Checkout>;
     }
   }
 }

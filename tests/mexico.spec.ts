@@ -1,7 +1,7 @@
-import type { IOpenpay } from '../dist/openpay';
+import type { IOpenpay } from '@obseqia/openpay-node';
 
+import { Openpay } from '@obseqia/openpay-node';
 import { assert, describe, expect, it } from 'vitest';
-import { Openpay } from '../dist/openpay';
 
 describe('Test the Openpay México SDK', () => {
   const openpay = new Openpay({

@@ -1,7 +1,7 @@
-import type { IOpenpay } from '../dist/openpay';
+import type { IOpenpay } from '@obseqia/openpay-node';
 
+import { Openpay } from '@obseqia/openpay-node';
 import { assert, describe, expect, it } from 'vitest';
-import { Openpay } from '../dist/openpay';
 
 describe('Test the Openpay Perú SDK', () => {
   const openpay = new Openpay({
@@ -391,6 +391,8 @@ describe('Test the Openpay Perú SDK', () => {
 
     it('should update the checkout', async () => {
       const checkout = await openpay.checkouts.update(testCheckoutId, 'available', {
+        description: 'Updated checkout',
+        redirect_url: 'https://example.com/return',
         expiration_date: `${today} 23:59`,
       });
       expect(checkout).toBeTruthy();

@@ -2,6 +2,11 @@ import { config } from 'dotenv';
 import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
+  resolve: {
+    alias: {
+      '@obseqia/openpay-node': './dist/openpay',
+    },
+  },
   test: {
     watch: false,
     testTimeout: 10000,

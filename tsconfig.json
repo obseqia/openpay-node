@@ -9,7 +9,10 @@
     "skipLibCheck": true,
     "noUncheckedIndexedAccess": true,
     "noEmit": true,
-    "verbatimModuleSyntax": true
+    "verbatimModuleSyntax": true,
+    "paths": {
+      "@obseqia/openpay-node": ["./dist/openpay"]
+    }
   },
   "exclude": ["eslint.config.ts", "node_modules", "dist"]
 }

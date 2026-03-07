@@ -69,8 +69,9 @@ jobs:
         run: |
           git add package.json
           git commit -m "chore: bump version to ${{ steps.version.outputs.tag }}"
-          git tag "${{ steps.version.outputs.tag }}"
+          git tag -a "${{ steps.version.outputs.tag }}" -m "chore: release ${{ steps.version.outputs.tag }}"
 
       - name: Push commit and tag
         run: |
-          git push --follow-tags
+          git push
+          git push origin "${{ steps.version.outputs.tag }}"

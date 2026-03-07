@@ -18,23 +18,23 @@ Install:
 
 ```bash
 # npm
-npm i openpay
+npm i @obseqia/openpay-node
 
 # pnpm
-pnpm i openpay
+pnpm i @obseqia/openpay-node
 
 # yarn
-yarn add openpay
+yarn add @obseqia/openpay-node
 ```
 
 Instantiate:
 
 ```ts
 // ESM / Typescript
-import { Openpay } from "openpay";
+import { Openpay } from "@obseqia/openpay-node";
 
 // CommonJS
-const { Openpay } = require("openpay");
+const { Openpay } = require("@obseqia/openpay-node");
 
 const openpay = new Openpay({
   merchantId: process.env.OPENPAY_MERCHANT_ID ?? '',
@@ -61,14 +61,14 @@ await openpay.<resource>.<method>();
 
 ## ✔️ Compatibility
 
-This SDK is built for Node.js v14.0.0 and above, but might be compatible with older versions.
+This SDK is built for Node.js v24.0.0 and above.
 
 ## ⚙️ Configuration
 
-To instantiate the Openpay SDK, yo need to pass the following configurations:
+To instantiate the Openpay SDK, you need to pass the following configurations:
 
 ```ts
-import { Openpay } from "openpay";
+import { Openpay } from "@obseqia/openpay-node";
 
 const openpay = new Openpay({
   // Options
@@ -117,7 +117,7 @@ If the `FetchError` was created by the Openpay API, `error.data` will have this 
 | ----------------------- | ------------------------------------------ |
 | error.data.category     | `"request"` \| `"internal"` \| `"gateway"` |
 | error.data.error_code   | `number`                                   |
-| error.data.description  | `boolean`                                  |
+| error.data.description  | `string`                                   |
 | error.data.http_code    | `number`                                   |
 | error.data.request_id   | `string`                                   |
 | error.data.fraud_rules? | `string[]` \| `undefined`                  |
@@ -132,9 +132,9 @@ For detailed descriptions and possible error codes, check out [the official docu
 
 ```ts
 // Optional. Use type safety
-import type { IOpenpay } from "openpay";
+import type { IOpenpay } from "@obseqia/openpay-node";
 
-const input: IOpenpay.Customers.CreateInput = {
+const input: IOpenpay.Customer.CreateInput = {
   name: "John",
   last_name: "Doe",
   email: "john.doe@example.com",
@@ -153,7 +153,7 @@ try {
 
 ```ts
 // Optional. Use type safety
-import type { IOpenpay } from "openpay";
+import type { IOpenpay } from "@obseqia/openpay-node";
 
 const input: IOpenpay.Charge.CreateFromCard = {
   amount: 50,
@@ -194,7 +194,7 @@ To contribute to this project, fork this repository and install the dependencies
 pnpm i
 ```
 
-The project uses [Biome](https://biomejs.dev/) for linting and formatting. If you are using VS Code, we recommend installing the `biomejs.biome` extension and to disable Prettier (`esbenp.prettier-vscode`) if enabled.
+The project uses [ESLint](https://eslint.org/) for linting and [Prettier](https://prettier.io/) for formatting. If you are using VS Code, we recommend installing the `dbaeumer.vscode-eslint` and `esbenp.prettier-vscode` extensions.
 
 ### 🧪 Tests
 

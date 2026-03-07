@@ -1,17 +1,17 @@
 # Publishing Guide
 
-This document explains how to publish the `@obseqia/openpay-node` package to npm.
+This document explains how to publish the `@obseqia/openpay` package to npm.
 
 ## Quick Setup
 
 **To enable automated publishing with Trusted Publishing:**
 
-1. Navigate to: https://www.npmjs.com/package/@obseqia/openpay-node/settings/publishing
+1. Navigate to: https://www.npmjs.com/package/@obseqia/openpay/settings/publishing
 2. Click "Add a new trusted publisher"
 3. Select "GitHub Actions"
 4. Fill in:
    - Organization: `obseqia`
-   - Repository: `openpay-node`
+   - Repository: `openpay`
    - Workflow filename: `publish.yml`
 5. Click "Create"
 
@@ -30,10 +30,10 @@ This approach is more secure than using long-lived API tokens because:
 
 ### Prerequisites
 
-1. **Trusted Publishing Configured on npm** - Must be set up in the @obseqia organization
-   - Go to: https://www.npmjs.com/org/obseqia/settings/publishing
+1. **Trusted Publishing Configured on npm** - Must be set up for the package
+   - Go to: https://www.npmjs.com/package/@obseqia/openpay/settings/publishing
    - Add GitHub as a trusted publisher
-   - Specify the repository: `obseqia/openpay-node`
+   - Specify the repository: `obseqia/openpay`
    - See detailed steps in "Configuring Trusted Publishing" section below
 
 2. **Version in `package.json`** - Must match the git tag being created
@@ -69,7 +69,7 @@ When a tag matching the pattern `v*.*.*` is pushed:
 1. Go to: Repository → Actions tab
 2. Look for the "Publish to npm" workflow
 3. Click the workflow run to see detailed logs
-4. Check npm registry: https://www.npmjs.com/package/@obseqia/openpay-node
+4. Check npm registry: https://www.npmjs.com/package/@obseqia/openpay
 
 ## Manual Publishing (Not Recommended)
 
@@ -88,7 +88,7 @@ pnpm lint
 pnpm build
 
 # 3. Configure npm trust (one-time)
-npm trust github @obseqia/openpay-node --repo obseqia/openpay-node -y
+npm trust github @obseqia/openpay --repo obseqia/openpay -y
 
 # 4. Publish
 pnpm publish --access public
@@ -123,13 +123,13 @@ Trusted Publishing uses OpenID Connect (OIDC) to securely authenticate GitHub Ac
 
 ### Step 1: Enable Trusted Publishing on npm
 
-1. Go to: https://www.npmjs.com/package/@obseqia/openpay-node/settings/publishing
-   (Or navigate: npmjs.com → Packages → @obseqia/openpay-node → Settings → Publishing)
+1. Go to: https://www.npmjs.com/package/@obseqia/openpay/settings/publishing
+   (Or navigate: npmjs.com → Packages → @obseqia/openpay → Settings → Publishing)
 2. Under "Trusted Publisher" section, click "Add a new trusted publisher"
 3. Select **GitHub Actions** as the provider
 4. Configure the following fields:
    - **Organization or user:** `obseqia`
-   - **Repository:** `openpay-node`
+   - **Repository:** `openpay`
    - **Workflow filename:** `publish.yml` (just the filename, not the full path)
    - **Environment name:** (leave empty unless using GitHub Environments)
 5. Click "Create"
@@ -161,16 +161,16 @@ These permissions are automatically granted by GitHub Actions during the workflo
 
 ### Publishing fails with "404 Not Found"
 
-- **Cause**: The package name `@obseqia/openpay-node` might not exist on npm
+- **Cause**: The package name `@obseqia/openpay` might not exist on npm
 - **Solution**: Contact npm support or create the package first with `npm publish`
 
 ### Publishing fails with "401 Unauthorized"
 
 - **Cause**: Trusted Publishing not configured or misconfigured
 - **Solution**:
-  1. Verify Trusted Publisher is configured: https://www.npmjs.com/org/obseqia/settings/publishing
+  1. Verify Trusted Publisher is configured: https://www.npmjs.com/package/@obseqia/openpay/settings/publishing
   2. Check that:
-     - Repository is set to: `obseqia/openpay-node`
+     - Repository is set to: `obseqia/openpay`
      - Provider is: GitHub Actions
   3. Ensure workflow has `id-token: write` permission (already configured)
   4. Try publishing again from the correct repository and tag pattern
@@ -215,11 +215,11 @@ Key configuration:
 
 ```bash
 # Check current version
-npm view @obseqia/openpay-node version
+npm view @obseqia/openpay version
 
 # List all published versions
-npm view @obseqia/openpay-node versions
+npm view @obseqia/openpay versions
 
 # View package details
-npm info @obseqia/openpay-node
+npm info @obseqia/openpay
 ```

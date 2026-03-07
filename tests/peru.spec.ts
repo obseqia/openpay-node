@@ -1,6 +1,6 @@
-import type { IOpenpay } from '@obseqia/openpay-node';
+import type { IOpenpay } from '@obseqia/openpay';
 
-import { Openpay } from '@obseqia/openpay-node';
+import { Openpay } from '@obseqia/openpay';
 import { assert, describe, expect, it } from 'vitest';
 
 describe('Test the Openpay Perú SDK', () => {

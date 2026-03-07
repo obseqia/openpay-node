@@ -68,7 +68,7 @@ pnpm test:pe
 
 ## Single-Test Guidance
 
-- Tests import from `@obseqia/openpay-node` via a vitest alias that resolves to `dist/openpay`, simulating external package usage. Build first with `pnpm build`.
+- Tests import from `@obseqia/openpay` via a vitest alias that resolves to `dist/openpay`, simulating external package usage. Build first with `pnpm build`.
 - Run one suite:
 
 ```bash

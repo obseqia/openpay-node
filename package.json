@@ -1,5 +1,5 @@
 {
-  "name": "@obseqia/openpay-node",
+  "name": "@obseqia/openpay",
   "description": "Modern Openpay SDK for Node.js — supports México, Colombia and Perú",
   "version": "3.1.0",
   "license": "MIT",

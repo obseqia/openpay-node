@@ -179,7 +179,7 @@ describe('Test the Openpay México SDK', () => {
       await expect(openpay.customers.bankaccounts.list(testCustomerId)).resolves.toBeTruthy();
     });
 
-    it('should get the test bank account for the customer', async (x) => {
+    it('should get the test bank account for the customer', async () => {
       await expect(
         openpay.customers.bankaccounts.get(testCustomerId, testBankAccountId),
       ).resolves.toBeTruthy();
@@ -272,7 +272,7 @@ describe('Test the Openpay México SDK', () => {
 
     describe('Test customer charges API', () => {
       it('should create a charge to an existing card', async () => {
-        const { customer, ...data } = testExistingCardCharge;
+        const { customer: _, ...data } = testExistingCardCharge;
         const txn = await openpay.customers.charges.create(testCustomerId, {
           ...data,
           source_id: testCustomerCardId,
@@ -298,7 +298,7 @@ describe('Test the Openpay México SDK', () => {
       });
 
       it('should create charge with new bank account', async () => {
-        const { customer, ...data } = testBankAccountCharge;
+        const { customer: _, ...data } = testBankAccountCharge;
         const txn = await openpay.customers.charges.create(testCustomerId, data);
         expect(txn).toBeTruthy();
         console.log('The charge to customer new bank:', txn.id);

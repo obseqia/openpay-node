@@ -213,7 +213,7 @@ describe('Test the Openpay Perú SDK', () => {
 
     describe('Test customer charges API', () => {
       it('should create a charge to an existing card', async () => {
-        const { customer, ...data } = testExistingCardCharge;
+        const { customer: _, ...data } = testExistingCardCharge;
         const txn = await openpay.customers.charges.create(testCustomerId, {
           ...data,
           source_id: testCustomerCardId,
@@ -233,7 +233,7 @@ describe('Test the Openpay Perú SDK', () => {
       });
 
       it('should create charge on store', async () => {
-        const { customer, ...data } = testStoreCharge;
+        const { customer: _, ...data } = testStoreCharge;
         const txn = await openpay.customers.charges.create(testCustomerId, data);
         expect(txn).toBeTruthy();
         console.log('The customer charge on store:', txn.id);
@@ -405,7 +405,7 @@ describe('Test the Openpay Perú SDK', () => {
     });
 
     it('should create a customer checkout', async () => {
-      const { customer, order_id, ...data } = testCheckout;
+      const { customer: _, order_id: __, ...data } = testCheckout;
       // @ts-expect-error Perú doesn't expect the customer info
       const checkout = await openpay.customers.checkouts.create(testCustomerId, {
         ...data,

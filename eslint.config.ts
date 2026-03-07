@@ -20,6 +20,14 @@ export default defineConfig(
       '@typescript-eslint/no-explicit-any': 'warn',
       // The SDK uses the IOpenpay namespace pattern intentionally (documented in AGENTS.md)
       '@typescript-eslint/no-namespace': 'off',
+      // Allow underscore-prefixed variables to indicate intentionally unused values
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        {
+          argsIgnorePattern: '^_',
+          varsIgnorePattern: '^_',
+        },
+      ],
     },
   },
   {

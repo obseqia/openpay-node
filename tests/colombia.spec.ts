@@ -221,7 +221,7 @@ describe('Test the Openpay Colombia SDK', () => {
 
     describe('Test customer charges API', () => {
       it('should create a charge to an existing card', async () => {
-        const { customer, ...data } = testExistingCardCharge;
+        const { customer: _, ...data } = testExistingCardCharge;
         const txn = await openpay.customers.charges.create(testCustomerId, {
           ...data,
           source_id: testCustomerCardId,
@@ -247,7 +247,7 @@ describe('Test the Openpay Colombia SDK', () => {
       });
 
       it('should create charge on store', async () => {
-        const { customer, ...data } = testStoreCharge;
+        const { customer: _, ...data } = testStoreCharge;
         const txn = await openpay.customers.charges.create(testCustomerId, data);
         expect(txn).toBeTruthy();
         console.log('The charge to a customer on store:', txn.id);
@@ -363,7 +363,7 @@ describe('Test the Openpay Colombia SDK', () => {
 
     describe('Test customer PSE API', () => {
       it('should create a charge to an existing user', async () => {
-        const { customer, ...data } = testPse;
+        const { customer: _, ...data } = testPse;
         const txn = await openpay.customers.pse.create(testCustomerId, data);
         expect(txn).toBeTruthy();
         testCustomerTxnId = txn.id;

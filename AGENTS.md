@@ -1,7 +1,9 @@
 # AGENTS.md
+
 Repository-specific guidance for agentic coding tools working in `openpay-node`.
 
 ## Scope
+
 - Applies to the whole repository.
 - Prefer `pnpm`; the repo includes `pnpm-lock.yaml` and the README uses `pnpm`.
 - Never use `npm`; always use `pnpm` for installs, scripts, and package info lookups.
@@ -10,10 +12,12 @@ Repository-specific guidance for agentic coding tools working in `openpay-node`.
 - Tests are integration tests in `tests/*.spec.ts` and hit Openpay sandbox APIs.
 
 ## Other Agent Rules
+
 - Cursor rules: none found. No `.cursor/rules/` or `.cursorrules` exists.
 - Copilot rules: none found. No `.github/copilot-instructions.md` exists.
 
 ## Stack And Layout
+
 - TypeScript, `ofetch`, `tsup`, ESLint, Prettier, Vitest, `dotenv`.
 - `src/openpay.ts`: SDK implementation and public export surface.
 - `src/types.ts`: `IOpenpay` namespace and SDK/public type definitions.
@@ -26,11 +30,24 @@ Repository-specific guidance for agentic coding tools working in `openpay-node`.
 - `.env.example`: template for `.env.testing`.
 
 ## Install
+
 ```bash
 pnpm install
 ```
 
+## Git Setup
+
+This repository is a modernized fork of the official Openpay SDK. To maintain compatibility with the upstream repository and facilitate contributing back:
+
+```bash
+# Add upstream remote to track the official Openpay repository
+git remote add upstream https://github.com/open-pay/openpay-node
+```
+
+You can then use `git fetch upstream` to stay updated with the official repository and `git cherry-pick` to bring in specific changes.
+
 ## Build, Lint, And Test
+
 ```bash
 pnpm build
 pnpm lint
@@ -41,6 +58,7 @@ pnpm test:pe
 ```
 
 ## Command Notes
+
 - `pnpm build` runs `rimraf dist && tsup src/openpay.ts --format cjs,esm --dts --no-splitting`.
 - `pnpm lint` runs `eslint ./src`; it does not lint `tests` by default.
 - `pnpm format` runs `prettier --write .`; formats all source, tests, and config files.
@@ -49,30 +67,38 @@ pnpm test:pe
 - `pnpm test:pe` runs `vitest run peru`.
 
 ## Single-Test Guidance
+
 - Tests import from `../dist/openpay`, not `src`, so build first.
 - Run one suite:
+
 ```bash
 pnpm build && pnpm vitest run tests/mexico.spec.ts
 pnpm build && pnpm vitest run tests/colombia.spec.ts
 pnpm build && pnpm vitest run tests/peru.spec.ts
 ```
+
 - Run one test case:
+
 ```bash
 pnpm build && pnpm vitest run tests/mexico.spec.ts -t "should create a customer"
 ```
+
 - `-t` / `--testNamePattern` works, but these suites are stateful; isolated tests may fail if they depend on earlier setup.
 - Prefer running a whole country suite unless you know the targeted case is self-contained.
 
 ## Extra Useful Commands
+
 ```bash
 pnpm exec tsc --noEmit
 pnpm exec prettier --write .
 pnpm exec eslint ./src ./tests
 ```
+
 - There is no dedicated `typecheck` script.
 - `eslint ./src ./tests` is useful when touching tests because the default lint script only covers `src`.
 
 ## Test Environment
+
 - Create `.env.testing` before running Vitest.
 - Use `.env.example` as the template.
 - Required variables:
@@ -84,6 +110,7 @@ pnpm exec eslint ./src ./tests
 - Use credentials from the same country as the suite being run.
 
 ## Formatting Rules
+
 - Follow `.prettierrc.mjs`.
 - Indent with 2 spaces.
 - Use single quotes.
@@ -93,12 +120,14 @@ pnpm exec eslint ./src ./tests
 - Do not manually reorder imports; run `pnpm format` and let the plugin handle it.
 
 ## Import Rules
+
 - Put `import type` statements before value imports when both are used.
 - Use relative imports inside `src`, e.g. `./types`.
 - Keep public type re-exports explicit, e.g. `export { IOpenpay } from './types';`.
 - Avoid adding barrel files unless the structure changes materially.
 
 ## Type Rules
+
 - Preserve `strict` TypeScript compatibility.
 - Preserve `noUncheckedIndexedAccess` compatibility.
 - Prefer explicit interfaces/type aliases for the public API.
@@ -107,6 +136,7 @@ pnpm exec eslint ./src ./tests
 - ESLint warns on `@typescript-eslint/no-explicit-any`; use `any` sparingly and prefer `unknown` internally.
 
 ## Naming Rules
+
 - Classes, interfaces, and namespaces use `PascalCase`.
 - Methods, parameters, locals, and object vars use `camelCase`.
 - Constants use `UPPER_SNAKE_CASE`.
@@ -114,6 +144,7 @@ pnpm exec eslint ./src ./tests
 - Keep country codes as `'mx' | 'co' | 'pe'`.
 
 ## Implementation Patterns
+
 - Reuse `sendRequest` for normal versioned merchant endpoints.
 - Reuse `sendStoreRequest` for store endpoints.
 - Build URLs from the merchant ID, country-specific base URLs, and API version constants.
@@ -122,6 +153,7 @@ pnpm exec eslint ./src ./tests
 - Prefer small wrapper methods that map directly to REST endpoints.
 
 ## Error Handling
+
 - Preserve current behavior unless you are intentionally improving it.
 - Invalid client IP currently logs with `console.error` and throws `Error`.
 - Unknown country codes currently log and fall back to Mexico.
@@ -129,6 +161,7 @@ pnpm exec eslint ./src ./tests
 - In docs and examples, prefer `try/catch`; in tests, use `expect(...).resolves` or `rejects`.
 
 ## Test Conventions
+
 - Follow the existing Vitest style: `describe`, `it`, `expect`, `assert`.
 - The suites are ordered, stateful, and integration-heavy; preserve sequencing when extending them.
 - Shared mutable IDs in outer scope are normal in this repo; change carefully.
@@ -137,6 +170,7 @@ pnpm exec eslint ./src ./tests
 - Use `@ts-expect-error` only with a short reason for a known typing mismatch.
 
 ## Safe Change Checklist
+
 - Update `src/types.ts` and `src/openpay.ts` together for public SDK changes.
 - Run `pnpm build` after source changes.
 - Run the most relevant country suite for endpoint changes.
@@ -144,6 +178,7 @@ pnpm exec eslint ./src ./tests
 - Run `pnpm exec eslint ./src ./tests` if you touched tests.
 
 ## Documentation Lookup
+
 - Before creating or modifying any configuration file whose syntax depends on a specific package version, use context7 to retrieve the canonical documentation for that version. Do not assume syntax from prior versions.
 - Key lookups by task:
   - **ESLint flat config**: `typescript-eslint` → flat config recommended preset; `eslint-config-prettier` → flat config usage
@@ -153,6 +188,7 @@ pnpm exec eslint ./src ./tests
   - **GitHub Actions**: `actions/checkout`, `pnpm/action-setup`, `actions/setup-node` → current version tags and pnpm cache setup
 
 ## Avoid
+
 - Do not edit `dist/` directly.
 - Do not convert Openpay request/response field names to camelCase.
 - Do not assume tests are unit-isolated; they create and mutate live sandbox resources.

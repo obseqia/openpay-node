@@ -39,7 +39,8 @@
     "format": "prettier --write .",
     "test:mx": "vitest run mexico",
     "test:co": "vitest run colombia",
-    "test:pe": "vitest run peru"
+    "test:pe": "vitest run peru",
+    "release": "pnpm build && pnpm publish --access public"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

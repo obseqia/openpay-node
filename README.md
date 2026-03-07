@@ -69,44 +69,47 @@ All three countries share the same SDK interface but not every resource or field
 
 ### Resources
 
-| Resource | México | Colombia | Perú |
-| --- | :---: | :---: | :---: |
-| `charges` | ✅ | ✅ | ✅ |
-| `charges.capture` | ✅ | ❌ | ❌ |
-| `charges.refund` | ✅ | ✅ | ✅ |
-| `cards` | ✅ | ✅ | ✅ |
-| `customers` | ✅ | ✅ | ✅ |
-| `customers.charges` | ✅ | ✅ | ✅ |
-| `customers.cards` | ✅ | ✅ | ✅ |
-| `customers.subscriptions` | ✅ | ✅ | ✅ |
-| `customers.bankaccounts` | ✅ | ❌ | ❌ |
-| `customers.transfers` | ✅ | ❌ | ❌ |
-| `customers.payouts` | ✅ | ❌ | ❌ |
-| `customers.pse` | ❌ | ✅ | ❌ |
-| `customers.checkouts` | ❌ | ❌ | ✅ |
-| `fees` | ✅ | ❌ | ❌ |
-| `payouts` | ✅ | ❌ | ❌ |
-| `plans` | ✅ | ✅ | ✅ |
-| `tokens` | ✅ | ✅ | ✅ |
-| `stores` | ✅ | ✅ | ❌ |
-| `webhooks` | ✅ | ✅ | ✅ |
-| `pse` | ❌ | ✅ | ❌ |
-| `checkouts` | ❌ | ❌ | ✅ |
+| Resource                  | México | Colombia | Perú |
+| ------------------------- | :----: | :------: | :--: |
+| `charges`                 |   ✅   |    ✅    |  ✅  |
+| `charges.capture`         |   ✅   |    ❌    |  ❌  |
+| `charges.refund`          |   ✅   |    ✅    |  ✅  |
+| `cards`                   |   ✅   |    ✅    |  ✅  |
+| `customers`               |   ✅   |    ✅    |  ✅  |
+| `customers.charges`       |   ✅   |    ✅    |  ✅  |
+| `customers.cards`         |   ✅   |    ✅    |  ✅  |
+| `customers.subscriptions` |   ✅   |    ✅    |  ✅  |
+| `customers.bankaccounts`  |   ✅   |    ❌    |  ❌  |
+| `customers.transfers`     |   ✅   |    ❌    |  ❌  |
+| `customers.payouts`       |   ✅   |    ❌    |  ❌  |
+| `customers.pse`           |   ❌   |    ✅    |  ❌  |
+| `customers.checkouts`     |   ❌   |    ❌    |  ✅  |
+| `fees`                    |   ✅   |    ❌    |  ❌  |
+| `payouts`                 |   ✅   |    ❌    |  ❌  |
+| `plans`                   |   ✅   |    ✅    |  ✅  |
+| `tokens`                  |   ✅   |    ✅    |  ✅  |
+| `stores`                  |   ✅   |    ✅    |  ❌  |
+| `webhooks`                |   ✅   |    ✅    |  ✅  |
+| `pse`                     |   ❌   |    ✅    |  ❌  |
+| `checkouts`               |   ❌   |    ❌    |  ✅  |
 
 ### Country-specific fields
 
-| Field | Resource | Country | Notes |
-| --- | --- | :---: | --- |
-| `iva` | `Charge.CreateInput` | Colombia | Tax field required for some charge types |
+| Field              | Resource                           | Country  | Notes                                                            |
+| ------------------ | ---------------------------------- | :------: | ---------------------------------------------------------------- |
+| `iva`              | `Charge.CreateInput`               | Colombia | Tax field required for some charge types                         |
 | `customer_address` | `Customer`, `Customer.CreateInput` | Colombia | Colombian address structure (`department`, `city`, `additional`) |
-| `clientIP` | `Openpay` constructor | All | Required. IPv4 only. Used for anti-fraud system |
+| `clientIP`         | `Openpay` constructor              |   All    | Required. IPv4 only. Used for anti-fraud system                  |
+
+> [!NOTE]
+> IPv6 is not currently supported. If you need IPv6 support, please open an issue on the repository. For now, use only IPv4 addresses for the `clientIP` parameter.
 
 ## ⚙️ Configuration
 
 To instantiate the Openpay SDK, you need to pass the following configurations:
 
 ```ts
-import { Openpay } from "@obseqia/openpay-node";
+import { Openpay } from '@obseqia/openpay-node';
 
 const openpay = new Openpay({
   // Options
@@ -126,11 +129,11 @@ If your application supports multiple countries, or you have multiple merchant a
 However, if you need to change any of these configurations after instantiation, you can do so with the following methods:
 
 ```ts
-openpay.setMerchantId("new-merchant-id");
-openpay.setPrivateKey("new-private-key");
-openpay.setClientIP("127.0.0.1");
+openpay.setMerchantId('new-merchant-id');
+openpay.setPrivateKey('new-private-key');
+openpay.setClientIP('127.0.0.1');
 openpay.setProductionReady(true);
-openpay.setCountryCode("co");
+openpay.setCountryCode('co');
 ```
 
 ## ✔️ Error Handling
@@ -138,13 +141,13 @@ openpay.setCountryCode("co");
 Whenever the API returns an error or the SDK is unable to communicate with the API, `Openpay` will throw a `FetchError` from `ofetch`. You can handle any error by wrapping the API call inside of a `try`/`catch` block:
 
 ```ts
-import { FetchError } from "ofetch";
+import { FetchError } from 'ofetch';
 
 try {
   const customer = await openpay.customers.create(input);
 } catch (error) {
   if (error instanceof FetchError) {
-    console.error("Openpay API error:", error.data);
+    console.error('Openpay API error:', error.data);
   }
 }
 ```
@@ -172,20 +175,20 @@ For detailed descriptions and possible error codes, check out [the official docu
 
 ```ts
 // Optional. Use type safety
-import type { IOpenpay } from "@obseqia/openpay-node";
+import type { IOpenpay } from '@obseqia/openpay-node';
 
 const input: IOpenpay.Customer.CreateInput = {
-  name: "John",
-  last_name: "Doe",
-  email: "john.doe@example.com",
-  phone_number: "1234567890",
+  name: 'John',
+  last_name: 'Doe',
+  email: 'john.doe@example.com',
+  phone_number: '1234567890',
 };
 
 try {
   const customer = await openpay.customers.create(input);
-  console.log("The newly created customer:", customer);
+  console.log('The newly created customer:', customer);
 } catch (error) {
-  console.error("Openpay API error:", error);
+  console.error('Openpay API error:', error);
 }
 ```
 
@@ -193,33 +196,33 @@ try {
 
 ```ts
 // Optional. Use type safety
-import type { IOpenpay } from "@obseqia/openpay-node";
+import type { IOpenpay } from '@obseqia/openpay-node';
 
 const input: IOpenpay.Charge.CreateFromCard = {
   amount: 50,
-  method: "card",
-  description: "Test existing card charges",
-  device_session_id: "fraud-protection-token", // Token from client used for fraud prevention
+  method: 'card',
+  description: 'Test existing card charges',
+  device_session_id: 'fraud-protection-token', // Token from client used for fraud prevention
   customer: {
-    name: "John",
-    last_name: "Doe",
-    email: "john.doe@example.com",
-    phone_number: "1234567890",
+    name: 'John',
+    last_name: 'Doe',
+    email: 'john.doe@example.com',
+    phone_number: '1234567890',
   },
   card: {
-    card_number: "4111111111111111",
-    holder_name: "John Doe",
-    expiration_year: "29",
-    expiration_month: "1",
-    cvv2: "110",
+    card_number: '4111111111111111',
+    holder_name: 'John Doe',
+    expiration_year: '29',
+    expiration_month: '1',
+    cvv2: '110',
   },
 };
 
 try {
   const transaction = await openpay.charges.create(input);
-  console.log("The newly created transaction:", transaction);
+  console.log('The newly created transaction:', transaction);
 } catch (error) {
-  console.error("Openpay API error:", error);
+  console.error('Openpay API error:', error);
 }
 ```
 
@@ -228,33 +231,33 @@ try {
 #### Managing webhooks
 
 ```ts
-import type { IOpenpay } from "@obseqia/openpay-node";
+import type { IOpenpay } from '@obseqia/openpay-node';
 
 const input: IOpenpay.Webhook.CreateInput = {
-  url: "https://example.com/webhook",
-  user: "webhook_user",
-  password: "webhook_password",
-  event_types: ["charge.succeeded", "charge.failed", "payout.created"],
+  url: 'https://example.com/webhook',
+  user: 'webhook_user',
+  password: 'webhook_password',
+  event_types: ['charge.succeeded', 'charge.failed', 'payout.created'],
 };
 
 try {
   // Create a webhook
   const webhook = await openpay.webhooks.create(input);
-  console.log("Webhook created:", webhook.id);
+  console.log('Webhook created:', webhook.id);
 
   // List webhooks
   const webhooks = await openpay.webhooks.list();
-  console.log("All webhooks:", webhooks);
+  console.log('All webhooks:', webhooks);
 
   // Get a specific webhook
   const retrievedWebhook = await openpay.webhooks.get(webhook.id);
-  console.log("Retrieved webhook:", retrievedWebhook);
+  console.log('Retrieved webhook:', retrievedWebhook);
 
   // Delete a webhook
   await openpay.webhooks.delete(webhook.id);
-  console.log("Webhook deleted");
+  console.log('Webhook deleted');
 } catch (error) {
-  console.error("Openpay API error:", error);
+  console.error('Openpay API error:', error);
 }
 ```
 
@@ -265,39 +268,39 @@ For more webhook examples, see [`tests/mexico.spec.ts`](/tests/mexico.spec.ts).
 #### Creating a token
 
 ```ts
-import type { IOpenpay } from "@obseqia/openpay-node";
+import type { IOpenpay } from '@obseqia/openpay-node';
 
 const input: IOpenpay.Token.CreateInput = {
-  holder_name: "John Doe",
-  card_number: "4111111111111111",
-  cvv2: "110",
-  expiration_month: "12",
-  expiration_year: "25",
+  holder_name: 'John Doe',
+  card_number: '4111111111111111',
+  cvv2: '110',
+  expiration_month: '12',
+  expiration_year: '25',
   address: {
-    line1: "123 Main St",
-    line2: "Apt 4",
-    city: "Mexico City",
-    state: "Mexico",
-    postal_code: "06500",
-    country_code: "MX",
+    line1: '123 Main St',
+    line2: 'Apt 4',
+    city: 'Mexico City',
+    state: 'Mexico',
+    postal_code: '06500',
+    country_code: 'MX',
   },
 };
 
 try {
   const token = await openpay.tokens.create(input);
-  console.log("Token created:", token.id);
+  console.log('Token created:', token.id);
 
   // Use the token in a charge
   const chargeInput: IOpenpay.Charge.CreateInput = {
-    method: "card",
+    method: 'card',
     source_id: token.id,
     amount: 100,
-    description: "Charge using token",
+    description: 'Charge using token',
   };
   const charge = await openpay.charges.create(chargeInput);
-  console.log("Charge using token:", charge.id);
+  console.log('Charge using token:', charge.id);
 } catch (error) {
-  console.error("Openpay API error:", error);
+  console.error('Openpay API error:', error);
 }
 ```
 
@@ -308,40 +311,40 @@ For more token examples, see [`tests/mexico.spec.ts`](/tests/mexico.spec.ts).
 #### Managing cards
 
 ```ts
-import type { IOpenpay } from "@obseqia/openpay-node";
+import type { IOpenpay } from '@obseqia/openpay-node';
 
 const input: IOpenpay.Card.CreateInput = {
-  holder_name: "John Doe",
-  card_number: "4111111111111111",
-  cvv2: "110",
-  expiration_month: "12",
-  expiration_year: "25",
+  holder_name: 'John Doe',
+  card_number: '4111111111111111',
+  cvv2: '110',
+  expiration_month: '12',
+  expiration_year: '25',
 };
 
 try {
   // Create a card
   const card = await openpay.cards.create(input);
-  console.log("Card created:", card.id);
+  console.log('Card created:', card.id);
 
   // List cards
   const cards = await openpay.cards.list();
-  console.log("All cards:", cards);
+  console.log('All cards:', cards);
 
   // Get a specific card
   const retrievedCard = await openpay.cards.get(card.id);
-  console.log("Retrieved card:", retrievedCard);
+  console.log('Retrieved card:', retrievedCard);
 
   // Update a card
   const updateInput: IOpenpay.Card.UpdateInput = {
-    holder_name: "Jane Doe",
+    holder_name: 'Jane Doe',
   };
   await openpay.cards.update(card.id, updateInput);
 
   // Delete a card
   await openpay.cards.delete(card.id);
-  console.log("Card deleted");
+  console.log('Card deleted');
 } catch (error) {
-  console.error("Openpay API error:", error);
+  console.error('Openpay API error:', error);
 }
 ```
 
@@ -352,60 +355,60 @@ For more card examples, see [`tests/mexico.spec.ts`](/tests/mexico.spec.ts).
 #### Creating a plan
 
 ```ts
-import type { IOpenpay } from "@obseqia/openpay-node";
+import type { IOpenpay } from '@obseqia/openpay-node';
 
 const input: IOpenpay.Plan.CreateInput = {
-  name: "Monthly Subscription",
+  name: 'Monthly Subscription',
   amount: 99.99,
   repeat_every: 1,
-  repeat_unit: "month",
+  repeat_unit: 'month',
   retry_times: 2,
-  status_after_retry: "cancelled",
+  status_after_retry: 'cancelled',
   trial_days: 7,
 };
 
 try {
   const plan = await openpay.plans.create(input);
-  console.log("Plan created:", plan.id);
+  console.log('Plan created:', plan.id);
 } catch (error) {
-  console.error("Openpay API error:", error);
+  console.error('Openpay API error:', error);
 }
 ```
 
 #### Creating a subscription
 
 ```ts
-import type { IOpenpay } from "@obseqia/openpay-node";
+import type { IOpenpay } from '@obseqia/openpay-node';
 
 const input: IOpenpay.Subscription.CreateInput = {
-  plan_id: "plan_id_here", // Use the ID from a previously created plan
-  source_id: "card_id_here", // Use an existing customer card ID
-  trial_end_date: "2025-06-06",
+  plan_id: 'plan_id_here', // Use the ID from a previously created plan
+  source_id: 'card_id_here', // Use an existing customer card ID
+  trial_end_date: '2025-06-06',
 };
 
 try {
-  const subscription = await openpay.customers.subscriptions.create("customer_id", input);
-  console.log("Subscription created:", subscription.id);
+  const subscription = await openpay.customers.subscriptions.create('customer_id', input);
+  console.log('Subscription created:', subscription.id);
 
   // List customer subscriptions
-  const subscriptions = await openpay.customers.subscriptions.list("customer_id");
-  console.log("Customer subscriptions:", subscriptions);
+  const subscriptions = await openpay.customers.subscriptions.list('customer_id');
+  console.log('Customer subscriptions:', subscriptions);
 
   // Get a specific subscription
-  const retrievedSub = await openpay.customers.subscriptions.get("customer_id", subscription.id);
-  console.log("Subscription details:", retrievedSub);
+  const retrievedSub = await openpay.customers.subscriptions.get('customer_id', subscription.id);
+  console.log('Subscription details:', retrievedSub);
 
   // Update a subscription
   const updateInput: IOpenpay.Subscription.UpdateInput = {
-    trial_end_date: "2025-07-06",
+    trial_end_date: '2025-07-06',
   };
-  await openpay.customers.subscriptions.update("customer_id", subscription.id, updateInput);
+  await openpay.customers.subscriptions.update('customer_id', subscription.id, updateInput);
 
   // Delete a subscription
-  await openpay.customers.subscriptions.delete("customer_id", subscription.id);
-  console.log("Subscription deleted");
+  await openpay.customers.subscriptions.delete('customer_id', subscription.id);
+  console.log('Subscription deleted');
 } catch (error) {
-  console.error("Openpay API error:", error);
+  console.error('Openpay API error:', error);
 }
 ```
 
@@ -419,32 +422,32 @@ For more subscription examples, see [`tests/mexico.spec.ts`](/tests/mexico.spec.
 #### Managing bank accounts
 
 ```ts
-import type { IOpenpay } from "@obseqia/openpay-node";
+import type { IOpenpay } from '@obseqia/openpay-node';
 
 const input: IOpenpay.BankAccount.CreateInput = {
-  holder_name: "John Doe",
-  alias: "My Bank Account",
-  clabe: "012345678901234567", // 18-digit CLABE number
+  holder_name: 'John Doe',
+  alias: 'My Bank Account',
+  clabe: '012345678901234567', // 18-digit CLABE number
 };
 
 try {
   // Create a bank account for a customer
-  const bankAccount = await openpay.customers.bankaccounts.create("customer_id", input);
-  console.log("Bank account created:", bankAccount.id);
+  const bankAccount = await openpay.customers.bankaccounts.create('customer_id', input);
+  console.log('Bank account created:', bankAccount.id);
 
   // List customer bank accounts
-  const accounts = await openpay.customers.bankaccounts.list("customer_id");
-  console.log("Customer bank accounts:", accounts);
+  const accounts = await openpay.customers.bankaccounts.list('customer_id');
+  console.log('Customer bank accounts:', accounts);
 
   // Get a specific bank account
-  const retrievedAccount = await openpay.customers.bankaccounts.get("customer_id", bankAccount.id);
-  console.log("Bank account details:", retrievedAccount);
+  const retrievedAccount = await openpay.customers.bankaccounts.get('customer_id', bankAccount.id);
+  console.log('Bank account details:', retrievedAccount);
 
   // Delete a bank account
-  await openpay.customers.bankaccounts.delete("customer_id", bankAccount.id);
-  console.log("Bank account deleted");
+  await openpay.customers.bankaccounts.delete('customer_id', bankAccount.id);
+  console.log('Bank account deleted');
 } catch (error) {
-  console.error("Openpay API error:", error);
+  console.error('Openpay API error:', error);
 }
 ```
 
@@ -458,29 +461,29 @@ For more bank account examples, see [`tests/mexico.spec.ts`](/tests/mexico.spec.
 #### Creating a transfer
 
 ```ts
-import type { IOpenpay } from "@obseqia/openpay-node";
+import type { IOpenpay } from '@obseqia/openpay-node';
 
 const input: IOpenpay.Transfers.CreateInput = {
-  customer_id: "destination_customer_id",
-  amount: 150.50,
-  description: "Transfer to customer",
-  order_id: "ORD-123456",
+  customer_id: 'destination_customer_id',
+  amount: 150.5,
+  description: 'Transfer to customer',
+  order_id: 'ORD-123456',
 };
 
 try {
   // Create a transfer
-  const transfer = await openpay.customers.transfers.create("source_customer_id", input);
-  console.log("Transfer created:", transfer.id);
+  const transfer = await openpay.customers.transfers.create('source_customer_id', input);
+  console.log('Transfer created:', transfer.id);
 
   // List customer transfers
-  const transfers = await openpay.customers.transfers.list("customer_id");
-  console.log("Customer transfers:", transfers);
+  const transfers = await openpay.customers.transfers.list('customer_id');
+  console.log('Customer transfers:', transfers);
 
   // Get a specific transfer
-  const retrievedTransfer = await openpay.customers.transfers.get("customer_id", transfer.id);
-  console.log("Transfer details:", retrievedTransfer);
+  const retrievedTransfer = await openpay.customers.transfers.get('customer_id', transfer.id);
+  console.log('Transfer details:', retrievedTransfer);
 } catch (error) {
-  console.error("Openpay API error:", error);
+  console.error('Openpay API error:', error);
 }
 ```
 
@@ -494,33 +497,33 @@ For more transfer examples, see [`tests/mexico.spec.ts`](/tests/mexico.spec.ts).
 #### Creating a payout
 
 ```ts
-import type { IOpenpay } from "@obseqia/openpay-node";
+import type { IOpenpay } from '@obseqia/openpay-node';
 
 const input: IOpenpay.Payout.CreateInput = {
-  method: "bank_account",
-  amount: 500.00,
-  description: "Monthly payout",
-  order_id: "PAYOUT-123456",
+  method: 'bank_account',
+  amount: 500.0,
+  description: 'Monthly payout',
+  order_id: 'PAYOUT-123456',
   bank_account: {
-    clabe: "012345678901234567",
-    holder_name: "John Doe",
+    clabe: '012345678901234567',
+    holder_name: 'John Doe',
   },
 };
 
 try {
   // Create a payout
   const payout = await openpay.payouts.create(input);
-  console.log("Payout created:", payout.id);
+  console.log('Payout created:', payout.id);
 
   // List payouts
   const payouts = await openpay.payouts.list();
-  console.log("All payouts:", payouts);
+  console.log('All payouts:', payouts);
 
   // Get a specific payout
   const retrievedPayout = await openpay.payouts.get(payout.id);
-  console.log("Payout details:", retrievedPayout);
+  console.log('Payout details:', retrievedPayout);
 } catch (error) {
-  console.error("Openpay API error:", error);
+  console.error('Openpay API error:', error);
 }
 ```
 
@@ -534,25 +537,25 @@ For more payout examples, see [`tests/mexico.spec.ts`](/tests/mexico.spec.ts).
 #### Charging a fee
 
 ```ts
-import type { IOpenpay } from "@obseqia/openpay-node";
+import type { IOpenpay } from '@obseqia/openpay-node';
 
 const input: IOpenpay.Fee.CreateInput = {
-  customer_id: "customer_to_charge",
-  amount: 25.50,
-  description: "Platform fee",
-  order_id: "FEE-123456",
+  customer_id: 'customer_to_charge',
+  amount: 25.5,
+  description: 'Platform fee',
+  order_id: 'FEE-123456',
 };
 
 try {
   // Create a fee
   const fee = await openpay.fees.create(input);
-  console.log("Fee created:", fee.id);
+  console.log('Fee created:', fee.id);
 
   // List fees
   const fees = await openpay.fees.list();
-  console.log("All fees:", fees);
+  console.log('All fees:', fees);
 } catch (error) {
-  console.error("Openpay API error:", error);
+  console.error('Openpay API error:', error);
 }
 ```
 
@@ -563,7 +566,7 @@ For more fee examples, see [`tests/mexico.spec.ts`](/tests/mexico.spec.ts).
 #### Searching stores by location
 
 ```ts
-import type { IOpenpay } from "@obseqia/openpay-node";
+import type { IOpenpay } from '@obseqia/openpay-node';
 
 const input: IOpenpay.Store.ListQuery = {
   latitud: 19.4326, // Latitude
@@ -574,7 +577,7 @@ const input: IOpenpay.Store.ListQuery = {
 
 try {
   const stores = await openpay.stores.list(input);
-  console.log("Nearby stores:", stores);
+  console.log('Nearby stores:', stores);
 
   // Find a specific store
   stores.forEach((store) => {
@@ -582,7 +585,7 @@ try {
     console.log(`Chain: ${store.paynet_chain.name}`);
   });
 } catch (error) {
-  console.error("Openpay API error:", error);
+  console.error('Openpay API error:', error);
 }
 ```
 
@@ -596,30 +599,30 @@ For more store examples, see [`tests/mexico.spec.ts`](/tests/mexico.spec.ts).
 #### Creating a PSE charge
 
 ```ts
-import type { IOpenpay } from "@obseqia/openpay-node";
+import type { IOpenpay } from '@obseqia/openpay-node';
 
 const input: IOpenpay.Charge.CreateInput = {
-  method: "bank_account",
-  amount: 75.00,
-  description: "PSE payment",
-  order_id: "PSE-123456",
+  method: 'bank_account',
+  amount: 75.0,
+  description: 'PSE payment',
+  order_id: 'PSE-123456',
   customer: {
-    name: "Juan",
-    last_name: "García",
-    email: "juan.garcia@example.com",
-    phone_number: "3125551234",
+    name: 'Juan',
+    last_name: 'García',
+    email: 'juan.garcia@example.com',
+    phone_number: '3125551234',
   },
 };
 
 try {
   const charge = await openpay.pse.create(input);
-  console.log("PSE charge created:", charge.id);
+  console.log('PSE charge created:', charge.id);
 
   // For customer PSE charges
-  const customerCharge = await openpay.customers.pse.create("customer_id", input);
-  console.log("Customer PSE charge created:", customerCharge.id);
+  const customerCharge = await openpay.customers.pse.create('customer_id', input);
+  console.log('Customer PSE charge created:', customerCharge.id);
 } catch (error) {
-  console.error("Openpay API error:", error);
+  console.error('Openpay API error:', error);
 }
 ```
 
@@ -633,46 +636,46 @@ For more PSE examples, see [`tests/colombia.spec.ts`](/tests/colombia.spec.ts).
 #### Creating a checkout
 
 ```ts
-import type { IOpenpay } from "@obseqia/openpay-node";
+import type { IOpenpay } from '@obseqia/openpay-node';
 
 const input: IOpenpay.Checkout.CreateInput = {
-  amount: 200.00,
-  description: "Product purchase",
-  order_id: "ORDER-123456",
-  currency: "PEN",
-  redirect_url: "https://example.com/return",
-  expiration_date: "2025-12-31",
+  amount: 200.0,
+  description: 'Product purchase',
+  order_id: 'ORDER-123456',
+  currency: 'PEN',
+  redirect_url: 'https://example.com/return',
+  expiration_date: '2025-12-31',
   send_email: true,
   customer: {
-    name: "Carlos",
-    last_name: "Rodríguez",
-    email: "carlos@example.com",
-    phone_number: "987654321",
+    name: 'Carlos',
+    last_name: 'Rodríguez',
+    email: 'carlos@example.com',
+    phone_number: '987654321',
   },
 };
 
 try {
   // Create a checkout
   const checkout = await openpay.checkouts.create(input);
-  console.log("Checkout created:", checkout.id);
-  console.log("Checkout link:", checkout.checkout_link);
+  console.log('Checkout created:', checkout.id);
+  console.log('Checkout link:', checkout.checkout_link);
 
   // List checkouts
   const checkouts = await openpay.checkouts.list();
-  console.log("All checkouts:", checkouts);
+  console.log('All checkouts:', checkouts);
 
   // Get a specific checkout
   const retrievedCheckout = await openpay.checkouts.get(checkout.id);
-  console.log("Checkout details:", retrievedCheckout);
+  console.log('Checkout details:', retrievedCheckout);
 
   // Update checkout
   const updateInput: IOpenpay.Checkout.UpdateInput = {
-    description: "Updated description",
-    redirect_url: "https://example.com/new-return",
+    description: 'Updated description',
+    redirect_url: 'https://example.com/new-return',
   };
-  await openpay.checkouts.update(checkout.id, "available", updateInput);
+  await openpay.checkouts.update(checkout.id, 'available', updateInput);
 } catch (error) {
-  console.error("Openpay API error:", error);
+  console.error('Openpay API error:', error);
 }
 ```
 
@@ -683,13 +686,13 @@ For more checkout examples, see [`tests/peru.spec.ts`](/tests/peru.spec.ts).
 #### Configuring the request timeout
 
 ```ts
-import { Openpay } from "@obseqia/openpay-node";
+import { Openpay } from '@obseqia/openpay-node';
 
 const openpay = new Openpay({
-  merchantId: "your-merchant-id",
-  privateKey: "your-private-key",
-  clientIP: "127.0.0.1",
-  countryCode: "mx",
+  merchantId: 'your-merchant-id',
+  privateKey: 'your-private-key',
+  clientIP: '127.0.0.1',
+  countryCode: 'mx',
 });
 
 // Set a custom timeout for all requests (in milliseconds)
@@ -698,12 +701,12 @@ openpay.setTimeout(15000); // 15 seconds
 try {
   // All subsequent API calls will use the new timeout
   const customer = await openpay.customers.create({
-    name: "John",
-    email: "john@example.com",
+    name: 'John',
+    email: 'john@example.com',
   });
-  console.log("Customer created with custom timeout");
+  console.log('Customer created with custom timeout');
 } catch (error) {
-  console.error("Openpay API error:", error);
+  console.error('Openpay API error:', error);
 }
 ```
 
@@ -767,4 +770,4 @@ pnpm test:pe
 > The tests depend on having `OPENPAY_MERCHANT_ID` and `OPENPAY_PRIVATE_KEY` from an account created in the country you're running the tests on. For example: if you want to run `pnpm test:co`, you must use a merchant ID and private key from an account created in Openpay Colombia. Otherwise the tests will fail.
 
 > [!NOTE]
-> For México tests, the transfers and fees API's might fail since they require the customer to have funds, but the account created during the test won't have any. If you get a different error, please check your implementation.
+> For México tests, the payouts API tests are currently skipped (`it.skip`) since they require the customer to have sufficient funds to withdraw. Transfers and fees API tests may also fail for the same reason. If you want to run the skipped payout tests, you'll need to fund your sandbox account first. Please check the implementation if you encounter unexpected errors.

@@ -3,8 +3,6 @@ import type { IOpenpay } from '../dist/openpay';
 import { assert, describe, expect, it } from 'vitest';
 import { Openpay } from '../dist/openpay';
 
-const testPayouts = false;
-
 describe('Test the Openpay México SDK', () => {
   const openpay = new Openpay({
     merchantId: process.env.OPENPAY_MERCHANT_ID ?? '',
@@ -368,99 +366,107 @@ describe('Test the Openpay México SDK', () => {
     },
   };
 
-  if (testPayouts) {
-    describe('Test payouts API', () => {
-      it('should get all payouts', async () => {
-        await expect(openpay.payouts.list()).resolves.toBeTruthy();
-      });
+  describe('Test payouts API', () => {
+    it.skip('should get all payouts', async () => {
+      // TODO: Requires account with sufficient funds; enable after verifying sandbox behavior
+      await expect(openpay.payouts.list()).resolves.toBeTruthy();
+    });
 
-      it('should create a payout to a new card', async () => {
-        const txn = await openpay.payouts.create(testCardPayout);
+    it.skip('should create a payout to a new card', async () => {
+      // TODO: Requires account with sufficient funds; enable after verifying sandbox behavior
+      const txn = await openpay.payouts.create(testCardPayout);
+      expect(txn).toBeTruthy();
+      testPayoutTxnId = txn.id;
+
+      console.log('The payout:', txn.id);
+    });
+
+    it.skip('should get the payout', async () => {
+      // TODO: Requires account with sufficient funds; enable after verifying sandbox behavior
+      await expect(openpay.payouts.get(testPayoutTxnId)).resolves.toBeTruthy();
+    });
+
+    it.skip('should create a payout to a new bank account', async () => {
+      // TODO: Requires account with sufficient funds; enable after verifying sandbox behavior
+      await expect(openpay.payouts.create(testBankPayout)).resolves.toBeTruthy();
+    });
+
+    it.skip('should create a payout to an existing card', async () => {
+      // TODO: Requires account with sufficient funds; enable after verifying sandbox behavior
+      await expect(
+        openpay.payouts.create({
+          method: 'card',
+          destination_id: testCardId,
+          amount: 1.5,
+          description: 'Test payout to existing card',
+        }),
+      ).resolves.toBeTruthy();
+    });
+
+    it.skip('should create a payout to an existing bank account', async () => {
+      // TODO: Requires account with sufficient funds; enable after verifying sandbox behavior
+      await expect(
+        openpay.payouts.create({
+          method: 'bank_account',
+          destination_id: testBankAccountId,
+          amount: 1.5,
+          description: 'Test payout to existing bank account',
+        }),
+      ).resolves.toBeTruthy();
+    });
+
+    describe('Test customer payouts API', () => {
+      it.skip('should create a payout to a new card', async () => {
+        // TODO: Requires account with sufficient funds; enable after verifying sandbox behavior
+        const txn = await openpay.customers.payouts.create(testCustomerId, testCardPayout);
         expect(txn).toBeTruthy();
-        testPayoutTxnId = txn.id;
+        testCustomerPayoutTxnId = txn.id;
 
-        console.log('The payout:', txn.id);
+        console.log('The customer payout:', txn.id);
       });
 
-      it('should get the payout', async () => {
-        await expect(openpay.payouts.get(testPayoutTxnId)).resolves.toBeTruthy();
+      it.skip('should get all payouts', async () => {
+        // TODO: Requires account with sufficient funds; enable after verifying sandbox behavior
+        await expect(openpay.customers.payouts.list(testCustomerId)).resolves.toBeTruthy();
       });
 
-      it('should create a payout to a new bank account', async () => {
-        await expect(openpay.payouts.create(testBankPayout)).resolves.toBeTruthy();
-      });
-
-      it('should create a payout to an existing card', async () => {
+      it.skip('should get the payout', async () => {
+        // TODO: Requires account with sufficient funds; enable after verifying sandbox behavior
         await expect(
-          openpay.payouts.create({
+          openpay.customers.payouts.get(testCustomerId, testCustomerPayoutTxnId),
+        ).resolves.toBeTruthy();
+      });
+
+      it.skip('should create a payout to a new bank account', async () => {
+        // TODO: Requires account with sufficient funds; enable after verifying sandbox behavior
+        await expect(openpay.customers.payouts.create(testCustomerId, testBankPayout)).resolves.toBeTruthy();
+      });
+
+      it.skip('should create a payout to an existing card', async () => {
+        // TODO: Requires account with sufficient funds; enable after verifying sandbox behavior
+        await expect(
+          openpay.customers.payouts.create(testCustomerId, {
             method: 'card',
-            destination_id: testCardId,
+            destination_id: testCustomerCardId,
             amount: 1.5,
-            description: 'Test payout to existing card',
+            description: 'Test customer payout to existing card',
           }),
         ).resolves.toBeTruthy();
       });
 
-      it('should create a payout to an existing bank account', async () => {
+      it.skip('should create a payout to an existing bank account', async () => {
+        // TODO: Requires account with sufficient funds; enable after verifying sandbox behavior
         await expect(
-          openpay.payouts.create({
+          openpay.customers.payouts.create(testCustomerId, {
             method: 'bank_account',
             destination_id: testBankAccountId,
             amount: 1.5,
-            description: 'Test payout to existing bank account',
+            description: 'Test customer payout to existing bank account',
           }),
         ).resolves.toBeTruthy();
       });
-
-      describe('Test customer payouts API', () => {
-        it('should create a payout to a new card', async () => {
-          const txn = await openpay.customers.payouts.create(testCustomerId, testCardPayout);
-          expect(txn).toBeTruthy();
-          testCustomerPayoutTxnId = txn.id;
-
-          console.log('The customer payout:', txn.id);
-        });
-
-        it('should get all payouts', async () => {
-          await expect(openpay.customers.payouts.list(testCustomerId)).resolves.toBeTruthy();
-        });
-
-        it('should get the payout', async () => {
-          await expect(
-            openpay.customers.payouts.get(testCustomerId, testCustomerPayoutTxnId),
-          ).resolves.toBeTruthy();
-        });
-
-        it('should create a payout to a new bank account', async () => {
-          await expect(
-            openpay.customers.payouts.create(testCustomerId, testBankPayout),
-          ).resolves.toBeTruthy();
-        });
-
-        it('should create a payout to an existing card', async () => {
-          await expect(
-            openpay.customers.payouts.create(testCustomerId, {
-              method: 'card',
-              destination_id: testCustomerCardId,
-              amount: 1.5,
-              description: 'Test customer payout to existing card',
-            }),
-          ).resolves.toBeTruthy();
-        });
-
-        it('should create a payout to an existing bank account', async () => {
-          await expect(
-            openpay.customers.payouts.create(testCustomerId, {
-              method: 'bank_account',
-              destination_id: testBankAccountId,
-              amount: 1.5,
-              description: 'Test customer payout to existing bank account',
-            }),
-          ).resolves.toBeTruthy();
-        });
-      });
     });
-  }
+  });
 
   ////////////////////////////////
   // FEE TESTS

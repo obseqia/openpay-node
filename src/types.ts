@@ -517,8 +517,11 @@ export namespace IOpenpay {
       expiration_date?: string;
       send_email?: boolean;
       customer: Checkout['customer'];
-    }
-    export type UpdateInput = Pick<CreateInput, 'description' | 'redirect_url' | 'expiration_date' | 'send_email'>;
+    };
+    export type UpdateInput = Pick<
+      CreateInput,
+      'description' | 'redirect_url' | 'expiration_date' | 'send_email'
+    >;
   }
 
   export namespace SDK {
@@ -555,7 +558,7 @@ export namespace IOpenpay {
     }
 
     export interface Stores {
-      list(query?: Store.ListQuery): Promise<Store>;
+      list(query?: Store.ListQuery): Promise<Store[]>;
     }
 
     export interface Pse {

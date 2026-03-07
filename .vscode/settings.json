@@ -20,9 +20,7 @@
   "editor.formatOnSave": true,
   "prettier.requireConfig": true,
   "debug.javascript.terminalOptions": {
-    "skipFiles": [
-      "<node_internals>/**"
-    ]
+    "skipFiles": ["<node_internals>/**"]
   },
   "js/ts.tsdk": "node_modules/typescript/lib",
   "npm.packageManager": "pnpm",

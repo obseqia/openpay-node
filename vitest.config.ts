@@ -11,6 +11,9 @@ export default defineConfig({
     watch: false,
     testTimeout: 10000,
     include: ['./tests/**/*.spec.ts'],
+    typecheck: {
+      enabled: true,
+    },
     env: {
       // Sandbox environment
       ...config({ path: './.env.testing' }).parsed,

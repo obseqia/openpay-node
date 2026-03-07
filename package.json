@@ -37,7 +37,6 @@
     "build": "rimraf dist && tsup src/openpay.ts --format cjs,esm --dts --no-splitting",
     "lint": "eslint ./src",
     "format": "prettier --write .",
-    "typecheck": "tsc --noEmit",
     "test:mx": "vitest run mexico",
     "test:co": "vitest run colombia",
     "test:pe": "vitest run peru",

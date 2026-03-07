@@ -2,6 +2,21 @@
 
 This document explains how to publish the `@obseqia/openpay-node` package to npm.
 
+## Quick Setup
+
+**To enable automated publishing with Trusted Publishing:**
+
+1. Navigate to: https://www.npmjs.com/package/@obseqia/openpay-node/settings/publishing
+2. Click "Add a new trusted publisher"
+3. Select "GitHub Actions"
+4. Fill in:
+   - Organization: `obseqia`
+   - Repository: `openpay-node`
+   - Workflow filename: `publish.yml`
+5. Click "Create"
+
+That's it! No tokens needed.
+
 ## Automated Publishing (Recommended)
 
 The package is automatically published to npm when a semantic version tag is pushed to the repository using **Trusted Publishing** with OIDC (OpenID Connect).
@@ -108,13 +123,15 @@ Trusted Publishing uses OpenID Connect (OIDC) to securely authenticate GitHub Ac
 
 ### Step 1: Enable Trusted Publishing on npm
 
-1. Go to: https://www.npmjs.com/org/obseqia/settings/publishing
-2. Under "Trusted Publishers", click "Add a new trusted publisher"
+1. Go to: https://www.npmjs.com/package/@obseqia/openpay-node/settings/publishing
+   (Or navigate: npmjs.com → Packages → @obseqia/openpay-node → Settings → Publishing)
+2. Under "Trusted Publisher" section, click "Add a new trusted publisher"
 3. Select **GitHub Actions** as the provider
-4. Configure:
-   - **Repository:** `obseqia/openpay-node`
-   - **Workflow file:** `.github/workflows/publish.yml`
-   - **Environment:** (leave empty or specify if using GitHub Environments)
+4. Configure the following fields:
+   - **Organization or user:** `obseqia`
+   - **Repository:** `openpay-node`
+   - **Workflow filename:** `publish.yml` (just the filename, not the full path)
+   - **Environment name:** (leave empty unless using GitHub Environments)
 5. Click "Create"
 
 ### Step 2: Verify Workflow Permissions

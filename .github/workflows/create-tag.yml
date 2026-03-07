@@ -16,7 +16,7 @@ permissions:
   contents: write
 
 jobs:
-  create-tag:
+  create-release:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -44,11 +44,19 @@ jobs:
           git add package.json
           git commit -m "chore: release v$NEW_VERSION"
           git tag -a "v$NEW_VERSION" -m "chore: release v$NEW_VERSION"
+          echo "RELEASE_VERSION=$NEW_VERSION" >> $GITHUB_ENV
+          echo "RELEASE_TAG=v$NEW_VERSION" >> $GITHUB_ENV
 
       - name: Push commit and tag
         run: |
           git push
-          git push origin "$(git describe --tags --abbrev=0)"
+          git push origin "${{ env.RELEASE_TAG }}"
+
+      - name: Create GitHub Release
+        run: |
+          gh release create "${{ env.RELEASE_TAG }}" --generate-notes
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Bump to dev version
         run: |

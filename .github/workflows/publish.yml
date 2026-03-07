@@ -7,6 +7,7 @@ on:
 
 permissions:
   contents: read
+  id-token: write  # Required for Trusted Publishing (OIDC)
 
 jobs:
   publish:
@@ -35,5 +36,3 @@ jobs:
 
       - name: Publish to npm
         run: pnpm publish --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

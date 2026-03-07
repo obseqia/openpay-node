@@ -4,14 +4,22 @@ This document explains how to publish the `@obseqia/openpay-node` package to npm
 
 ## Automated Publishing (Recommended)
 
-The package is automatically published to npm when a semantic version tag is pushed to the repository.
+The package is automatically published to npm when a semantic version tag is pushed to the repository using **Trusted Publishing** with OIDC (OpenID Connect).
+
+This approach is more secure than using long-lived API tokens because:
+- ✅ No token storage needed in GitHub Secrets
+- ✅ Each publish uses short-lived, cryptographically-signed tokens
+- ✅ Tokens cannot be extracted or reused
+- ✅ Automatic revocation after the workflow completes
+- ✅ No 7-day token expiration concerns
 
 ### Prerequisites
 
-1. **NPM Token Secret** - Must be configured in GitHub repository settings
-   - Go to: Repository Settings → Secrets and variables → Actions
-   - Create a new secret named `NPM_TOKEN`
-   - Value: Your npm authentication token (see "Creating an NPM Token" below)
+1. **Trusted Publishing Configured on npm** - Must be set up in the @obseqia organization
+   - Go to: https://www.npmjs.com/org/obseqia/settings/publishing
+   - Add GitHub as a trusted publisher
+   - Specify the repository: `obseqia/openpay-node`
+   - See detailed steps in "Configuring Trusted Publishing" section below
 
 2. **Version in `package.json`** - Must match the git tag being created
    - Example: If pushing tag `v3.1.0`, ensure `package.json` version is `3.1.0`
@@ -37,7 +45,9 @@ When a tag matching the pattern `v*.*.*` is pushed:
 3. ✅ Installs dependencies with `pnpm install`
 4. ✅ Runs linter: `pnpm lint`
 5. ✅ Builds the package: `pnpm build` (generates `dist/`)
-6. ✅ Publishes to npm: `pnpm publish --access public`
+6. ✅ Generates OIDC token via GitHub's OIDC provider
+7. ✅ Publishes to npm: `pnpm publish --access public`
+8. ✅ OIDC token automatically expires (no manual revocation needed)
 
 ### Monitoring the Release
 
@@ -48,7 +58,9 @@ When a tag matching the pattern `v*.*.*` is pushed:
 
 ## Manual Publishing (Not Recommended)
 
-If for some reason you need to publish manually:
+If for some reason you need to publish manually, you have two options:
+
+### Option A: Using Trusted Publishing Locally (Requires OIDC Setup)
 
 ```bash
 # 1. Ensure you're on the correct branch and commit
@@ -60,8 +72,8 @@ pnpm install
 pnpm lint
 pnpm build
 
-# 3. Login to npm (one-time setup)
-npm login
+# 3. Configure npm trust (one-time)
+npm trust github @obseqia/openpay-node --repo obseqia/openpay-node -y
 
 # 4. Publish
 pnpm publish --access public
@@ -71,21 +83,62 @@ git tag v3.2.0
 git push origin v3.2.0
 ```
 
-## Creating an NPM Token
+### Option B: Using a Temporary Token (Not Recommended)
 
-### Steps:
+If you absolutely need a temporary token:
 
-1. Go to https://www.npmjs.com/settings/~/tokens
-2. Click "Create New Token"
-3. Select token type: **"Automation"** (recommended for CI/CD)
-4. Copy the token (save it somewhere safe)
+1. Go to https://www.npmjs.com/org/obseqia/settings/tokens
+2. Create a token with **"Publish"** permissions
+3. Keep token lifespan as short as possible (7 days minimum)
+4. Delete the token immediately after publishing
 
-### Why "Automation" type?
+```bash
+# 1. Set token as environment variable
+export NPM_TOKEN="npm_your_temporary_token_here"
 
-- Works with GitHub Actions without two-factor authentication
-- Higher security: no password needed
-- Can be revoked independently
-- Limited to publish operations (if you set the scope)
+# 2. Publish (token will be used automatically)
+pnpm publish --access public
+
+# 3. Go back to npm.js and revoke the token
+```
+
+## Configuring Trusted Publishing
+
+Trusted Publishing uses OpenID Connect (OIDC) to securely authenticate GitHub Actions with npm without storing long-lived tokens.
+
+### Step 1: Enable Trusted Publishing on npm
+
+1. Go to: https://www.npmjs.com/org/obseqia/settings/publishing
+2. Under "Trusted Publishers", click "Add a new trusted publisher"
+3. Select **GitHub Actions** as the provider
+4. Configure:
+   - **Repository:** `obseqia/openpay-node`
+   - **Workflow file:** `.github/workflows/publish.yml`
+   - **Environment:** (leave empty or specify if using GitHub Environments)
+5. Click "Create"
+
+### Step 2: Verify Workflow Permissions
+
+The workflow already includes the required permissions:
+
+```yaml
+permissions:
+  contents: read
+  id-token: write  # Required for OIDC tokens
+```
+
+These permissions are automatically granted by GitHub Actions during the workflow run.
+
+### Why Trusted Publishing is Better
+
+| Aspect | Traditional Token | Trusted Publishing |
+|--------|-----------------|-------------------|
+| Token Lifespan | Long-lived (7 days minimum) | Short-lived (< 1 hour) |
+| Storage | GitHub Secrets | Not stored (OIDC) |
+| Rotation | Manual or automated | Automatic each run |
+| Exposure Risk | Can leak in logs | Cryptographically signed |
+| Two-Factor Auth | Required bypass | Not needed |
+| Security Risk | High (if compromised) | Low (tokens self-destruct) |
 
 ## Troubleshooting
 
@@ -96,11 +149,14 @@ git push origin v3.2.0
 
 ### Publishing fails with "401 Unauthorized"
 
-- **Cause**: `NPM_TOKEN` secret is missing, wrong, or expired
+- **Cause**: Trusted Publishing not configured or misconfigured
 - **Solution**:
-  1. Create a new token on npmjs.com
-  2. Update the `NPM_TOKEN` secret in GitHub Settings
-  3. Try publishing again
+  1. Verify Trusted Publisher is configured: https://www.npmjs.com/org/obseqia/settings/publishing
+  2. Check that:
+     - Repository is set to: `obseqia/openpay-node`
+     - Provider is: GitHub Actions
+  3. Ensure workflow has `id-token: write` permission (already configured)
+  4. Try publishing again from the correct repository and tag pattern
 
 ### Publishing fails with "Lint" or "Build" errors
 

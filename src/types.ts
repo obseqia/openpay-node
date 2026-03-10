@@ -355,6 +355,7 @@ export namespace IOpenpay {
 
   export namespace Webhook {
     export type EventTypes =
+      | 'verification'
       | 'charge.refunded'
       | 'charge.failed'
       | 'charge.cancelled'

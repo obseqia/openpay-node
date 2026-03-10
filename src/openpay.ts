@@ -27,7 +27,7 @@ export class OpenpayException extends Error {
     this.fraud_rules = errorData.fraud_rules;
   }
 
-  get details(): IOpenpay.OpenpayError {
+  openpayError(): IOpenpay.OpenpayError {
     return {
       category: this.category,
       error_code: this.error_code,

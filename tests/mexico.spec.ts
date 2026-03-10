@@ -1,5 +1,5 @@
 import type { IOpenpay } from '@obseqia/openpay';
-import { Openpay } from '@obseqia/openpay';
+import { isOpenpayError, Openpay } from '@obseqia/openpay';
 import { afterAll, assert, beforeAll, describe, expect, it } from 'vitest';
 
 describe('Test the Openpay México SDK', () => {
@@ -18,7 +18,7 @@ describe('Test the Openpay México SDK', () => {
   async function waitUntilCustomerBalance(id: string, timeout: number = 120_000): Promise<void> {
     const waitTime = 5_000;
     let customer: IOpenpay.Customer = await openpay.customers.get(id);
-    const steps = timeout/waitTime;
+    const steps = timeout / waitTime;
     let countdown = steps;
     while (customer.balance <= 0 && countdown > 0) {
       countdown--;
@@ -57,16 +57,26 @@ describe('Test the Openpay México SDK', () => {
     });
 
     it('should get all the webhooks', async () => {
-      await expect(openpay.webhooks.list()).resolves.toBeTruthy();
+      const list = await openpay.webhooks.list();
+      expect(list).toBeTruthy();
+      expect(list.length).toBeGreaterThan(0);
     });
 
     it('should delete the webhook', async () => {
       await expect(openpay.webhooks.delete(webhook_id!)).resolves.toBeUndefined();
+      // Validate that the webhook no longer exists
+      // await expect(openpay.webhooks.get(webhook_id!)).rejects.toThrow(); // this will fail because Openpay didnt delete the webhook
     });
 
     afterAll(async () => {
       if (webhook_id) {
-        await openpay.webhooks.delete(webhook_id);
+        await openpay.webhooks.delete(webhook_id).catch((error) => {
+          if (isOpenpayError(error) && error.error_code === 1005) {
+            console.debug('Webhook already deleted, skipping...');
+          } else {
+            console.error('Unexpected error:', error);
+          }
+        });
       }
     });
   });
@@ -628,7 +638,7 @@ describe('Test the Openpay México SDK', () => {
 
   describe('Test customer payouts API', () => {
     let customer_id: string;
-    
+
     beforeAll(async () => {
       const customer = await openpay.customers.create({
         name: 'Customer Payout',
@@ -654,8 +664,7 @@ describe('Test the Openpay México SDK', () => {
         card: {
           card_number: '4111111111111111',
           holder_name: 'John Doe',
-          bank_code: '012',       
-
+          bank_code: '012',
         },
       });
       expect(txn).toBeTruthy();
@@ -665,14 +674,14 @@ describe('Test the Openpay México SDK', () => {
 
     it.skip('should create a payout to a new bank account', async () => {
       const txn = await openpay.customers.payouts.create(customer_id, {
-          amount: 1.5,
-          method: 'bank_account',
-          description: 'Test bank payout',
-          bank_account: {
-            clabe: '021180000118359717',
-            holder_name: 'John Doe',
-          },
-        });
+        amount: 1.5,
+        method: 'bank_account',
+        description: 'Test bank payout',
+        bank_account: {
+          clabe: '021180000118359717',
+          holder_name: 'John Doe',
+        },
+      });
       expect(txn).resolves.toBeTruthy();
       await expect(openpay.customers.payouts.get(customer_id, txn.id)).resolves.toBeTruthy();
     });

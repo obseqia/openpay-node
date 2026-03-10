@@ -10,6 +10,28 @@ const OPEN_PAY_SANDBOX_API_VERSION = 'v1';
 
 export type { IOpenpay } from './types';
 
+export class OpenpayException extends Error {
+  public readonly category: 'request' | 'internal' | 'gateway';
+  public readonly error_code: number;
+  public readonly http_code: number;
+  public readonly request_id: string;
+  public readonly fraud_rules?: string[];
+
+  constructor(errorData: IOpenpay.OpenpayError) {
+    super(errorData.description);
+    this.name = 'OpenpayException';
+    this.category = errorData.category;
+    this.error_code = errorData.error_code;
+    this.http_code = errorData.http_code;
+    this.request_id = errorData.request_id;
+    this.fraud_rules = errorData.fraud_rules;
+  }
+}
+
+export function isOpenpayError(error: unknown): error is OpenpayException {
+  return error instanceof OpenpayException;
+}
+
 export class Openpay {
   private merchantId = '';
   private privateKey = '';
@@ -81,28 +103,55 @@ export class Openpay {
       ? `${this.sandboxUrl}/${OPEN_PAY_SANDBOX_API_VERSION}/${apiPath}`
       : `${this.baseUrl}/${OPEN_PAY_API_VERSION}/${apiPath}`;
 
-    return await ofetch<T>(url, {
-      ...options,
-      timeout: this.timeout,
-      method: options?.method || 'GET',
-      headers: {
-        'X-Forwarded-For': this.clientIP,
-        Authorization: `Basic ${Buffer.from(`${this.privateKey}:`).toString('base64')}`,
-      },
-    });
+    try {
+      return await ofetch<T>(url, {
+        ...options,
+        timeout: this.timeout,
+        method: options?.method || 'GET',
+        headers: {
+          'X-Forwarded-For': this.clientIP,
+          Authorization: `Basic ${Buffer.from(`${this.privateKey}:`).toString('base64')}`,
+        },
+      });
+    } catch (error: unknown) {
+      if (this.isOpenpayError(error)) {
+        throw new OpenpayException(error.data as IOpenpay.OpenpayError);
+      }
+      throw error;
+    }
+  }
+
+  private isOpenpayError(error: unknown): error is { data: IOpenpay.OpenpayError } {
+    const e = error as { data?: unknown };
+    if (!e.data || typeof e.data !== 'object') return false;
+    const d = e.data as Record<string, unknown>;
+    return (
+      typeof d.category === 'string' &&
+      typeof d.error_code === 'number' &&
+      typeof d.description === 'string' &&
+      typeof d.http_code === 'number' &&
+      typeof d.request_id === 'string'
+    );
   }
 
   private async sendStoreRequest<T>(apiPath: string, options: FetchOptions<'json'>): Promise<T> {
     const url = this.isSandbox ? `${this.sandboxUrl}/${apiPath}` : `${this.baseUrl}/${apiPath}`;
 
-    return await ofetch(url, {
-      ...options,
-      timeout: this.timeout,
-      method: options.method || 'GET',
-      headers: {
-        Authorization: `Basic ${Buffer.from(`${this.privateKey}:`).toString('base64')}`,
-      },
-    });
+    try {
+      return await ofetch<T>(url, {
+        ...options,
+        timeout: this.timeout,
+        method: options.method || 'GET',
+        headers: {
+          Authorization: `Basic ${Buffer.from(`${this.privateKey}:`).toString('base64')}`,
+        },
+      });
+    } catch (error: unknown) {
+      if (this.isOpenpayError(error)) {
+        throw new OpenpayException(error.data as IOpenpay.OpenpayError);
+      }
+      throw error;
+    }
   }
 
   public charges: IOpenpay.SDK.Charges = {

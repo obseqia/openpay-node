@@ -3,7 +3,7 @@ export namespace IOpenpay {
   export type Currency = 'MXN' | 'USD' | 'COP' | 'PEN';
   export type PaymentMonths = 3 | 6 | 9 | 12 | 18;
 
-  export interface Error {
+  export type OpenpayError = {
     category: 'request' | 'internal' | 'gateway';
     error_code: number;
     description: string;

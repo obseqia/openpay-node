@@ -26,6 +26,17 @@ export class OpenpayException extends Error {
     this.request_id = errorData.request_id;
     this.fraud_rules = errorData.fraud_rules;
   }
+
+  get details(): IOpenpay.OpenpayError {
+    return {
+      category: this.category,
+      error_code: this.error_code,
+      description: this.message,
+      http_code: this.http_code,
+      request_id: this.request_id,
+      fraud_rules: this.fraud_rules,
+    };
+  }
 }
 
 export function isOpenpayError(error: unknown): error is OpenpayException {
